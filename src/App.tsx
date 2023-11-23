@@ -6,6 +6,7 @@ import { useState } from "react";
 import NavBar from "./Components/NavBar";
 import Cart from "./Components/Cart";
 import Expandable from "./Components/Expandable";
+import Form from "./Components/Form";
 
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -40,7 +41,20 @@ function App() {
 
       <Cart cartItems={cartItems} />
 
-      <Expandable />
+      <Expandable>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste sed neque
+        expedita ducimus doloremque ipsam at unde quidem in sunt. Molestiae vero
+        dignissimos voluptatum dolores delectus accusantium non impedit nobis
+        tempora! Corrupti excepturi id inventore eum libero voluptates tempora,
+        nobis et vel reiciendis placeat possimus, eveniet sequi fuga magnam
+        minima veniam facilis, iure totam numquam. Quaerat nisi recusandae
+        aliquid libero aspernatur ad incidunt in minima saepe facilis itaque,
+        accusantium fugit vero explicabo qui similique magnam assumenda natus
+        corporis? Inventore consectetur possimus veniam illum quasi velit
+        dignissimos tempora, quas quo est, maiores reiciendis quisquam corrupti
+        fugit eveniet, optio quae odit minima.
+      </Expandable>
+      <Form />
     </div>
   );
 }
