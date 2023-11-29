@@ -7,6 +7,7 @@ import NavBar from "./Components/NavBar";
 import Cart from "./Components/Cart";
 import Expandable from "./Components/Expandable";
 import Form from "./Components/Form";
+import Form2 from "./Components/Form2";
 
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -55,6 +56,7 @@ function App() {
         fugit eveniet, optio quae odit minima.
       </Expandable>
       <Form />
+      <Form2 />
     </div>
   );
 }
