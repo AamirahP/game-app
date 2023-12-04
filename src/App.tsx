@@ -8,6 +8,8 @@ import Cart from "./Components/Cart";
 import Expandable from "./Components/Expandable";
 import Form from "./Components/Form";
 import Form2 from "./Components/Form2";
+import ExpenseList from "./Components/ExpenseList";
+
 
 function App() {
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
@@ -57,6 +59,7 @@ function App() {
       </Expandable>
       <Form />
       <Form2 />
+      <ExpenseList />
     </div>
   );
 }
