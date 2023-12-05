@@ -8,10 +8,18 @@ import Cart from "./Components/Cart";
 import Expandable from "./Components/Expandable";
 import Form from "./Components/Form";
 import Form2 from "./Components/Form2";
-import ExpenseList from "./Components/ExpenseList";
-
+import ExpenseList from "./expense-tracker/Components/ExpenseList";
+import ExpenseFilter from "./expense-tracker/Components/ExpenseFilter";
 
 function App() {
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [expenses, setExpenses] = useState([
+    { id: 1, description: "Rent", amount: 1000, category: "Utilities" },
+    { id: 2, description: "Food", amount: 200, category: "Groceries" },
+    { id: 3, description: "TV", amount: 100, category: "Entertainment" },
+    { id: 4, description: "Gym", amount: 50, category: "Utilities" },
+  ]);
+
   let items = ["New York", "San Francisco", "Tokyo", "London", "Paris"];
 
   const handleSelectItem = (item: string) => {
@@ -21,6 +29,10 @@ function App() {
   const [cartItems, setCartItems] = useState(["product1", "product2"]);
 
   const [alertVisible, setAlertVisibility] = useState(false);
+
+  const visibleExpenses = selectedCategory
+    ? expenses.filter((e) => e.category === selectedCategory)
+    : expenses;
 
   return (
     <div>
@@ -59,7 +71,15 @@ function App() {
       </Expandable>
       <Form />
       <Form2 />
-      <ExpenseList />
+      <div className="mb-3">
+        <ExpenseFilter
+          onSelectCategory={(category) => setSelectedCategory(category)}
+        />
+      </div>
+      <ExpenseList
+        expenses={visibleExpenses}
+        onDelete={(id) => setExpenses(expenses.filter((e) => e.id !== id))}
+      />
     </div>
   );
 }
