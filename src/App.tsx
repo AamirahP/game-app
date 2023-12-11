@@ -10,6 +10,8 @@ import Form from "./Components/Form";
 import Form2 from "./Components/Form2";
 import ExpenseList from "./expense-tracker/Components/ExpenseList";
 import ExpenseFilter from "./expense-tracker/Components/ExpenseFilter";
+import ExpenseForm from "./expense-tracker/Components/ExpenseForm";
+import categories from "./expense-tracker/categories";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -71,6 +73,13 @@ function App() {
       </Expandable>
       <Form />
       <Form2 />
+      <div className="mb-5">
+        <ExpenseForm
+          onSubmit={(expense) =>
+            setExpenses([...expenses, { ...expense, id: expenses.length + 1 }])
+          }
+        />
+      </div>
       <div className="mb-3">
         <ExpenseFilter
           onSelectCategory={(category) => setSelectedCategory(category)}
