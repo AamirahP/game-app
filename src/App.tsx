@@ -2,7 +2,7 @@ import Alert from "./Components/Alert";
 import ListGroup from "./Components/ListGroup";
 import Button from "./Components/Button";
 import Like from "./Components/Like";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavBar from "./Components/NavBar";
 import Cart from "./Components/Cart";
 import Expandable from "./Components/Expandable";
@@ -12,6 +12,8 @@ import ExpenseList from "./expense-tracker/Components/ExpenseList";
 import ExpenseFilter from "./expense-tracker/Components/ExpenseFilter";
 import ExpenseForm from "./expense-tracker/Components/ExpenseForm";
 import categories from "./expense-tracker/categories";
+import ProductList from "./Components/ProductList";
+import apiClient, { CanceledError } from "./services/api-client";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -36,6 +38,74 @@ function App() {
     ? expenses.filter((e) => e.category === selectedCategory)
     : expenses;
 
+  const [category, setCategory] = useState("");
+
+  interface User {
+    id: number;
+    name: string;
+  }
+
+  const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState("");
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    apiClient
+      .get<User[]>("/users", {
+        signal: controller.signal,
+      })
+      .then((res) => {
+        setUsers(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        setError(err.message);
+        setLoading(false);
+      });
+    // .finally(() => {
+    //   setLoading(false);
+    // });
+
+    return () => controller.abort();
+  }, []);
+
+  const deleteUser = (user: User) => {
+    const originalUsers = [...users];
+    setUsers(users.filter((u) => u.id !== user.id));
+
+    apiClient.delete("/users" + user.id).catch((err) => {
+      setError(err.message);
+      setUsers(originalUsers);
+    });
+  };
+
+  const addUser = () => {
+    const originalUsers = [...users];
+    const newUser = { id: 0, name: "Aamirah" };
+    setUsers([newUser, ...users]);
+
+    apiClient
+      .post("/users", newUser)
+      .then(({ data: savedUser }) => setUsers([savedUser, ...users]))
+      .catch((err) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  };
+
+  const updateUser = (user: User) => {
+    const originalUsers = [...users];
+    const updatedUser = { ...user, name: user.name + "!" };
+    setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
+
+    apiClient.patch("/users/" + user.id, updatedUser).catch((err) => {
+      setError(err.message);
+      setUsers(originalUsers);
+    });
+  };
   return (
     <div>
       <ListGroup
@@ -89,6 +159,47 @@ function App() {
         expenses={visibleExpenses}
         onDelete={(id) => setExpenses(expenses.filter((e) => e.id !== id))}
       />
+      <select
+        name=""
+        id=""
+        className="form-select"
+        onChange={(event) => setCategory(event.target.value)}
+      >
+        <option value=""></option>
+        <option value="Clothing">Clothing</option>
+        <option value="Household">Household</option>
+      </select>
+
+      <ProductList category={category} />
+      {error && <p className="danger">{error}</p>}
+      <button className="btn btn-primary mb-3" onClick={addUser}>
+        Add
+      </button>
+      {isLoading && <div className="spinner-border"></div>}
+      <ul className="list-group">
+        {users.map((user) => (
+          <li
+            key={user.id}
+            className="list-group-item d-flex justify-content-between"
+          >
+            {user.name}
+            <div>
+              <button
+                className="btn btn-outline-secondary mx-y"
+                onClick={() => updateUser(user)}
+              >
+                Update
+              </button>
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => deleteUser(user)}
+              >
+                Delete
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
